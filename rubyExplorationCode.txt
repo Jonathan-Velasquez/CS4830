@@ -1,0 +1,136 @@
+﻿This file contains my notes and some code as I worked my way through the ruby tutorial.
+ 
+to_s - to string. This is used in the tutorial to change an int to a string so the .reverse method can be used (changing 40 to 04) 
+to_i  - to integer
+to_a - to array
+sort! - sorts an array. This is used to sort variables(which can store more than one element). The example in the tutorial sorts ints, but I also tried it with strings.
+
+> names = ["John", "Alex", "Ryan", "Vinny"]
+=> ["John", "Alex", "Ryan", "Vinny"]
+> names.sort!
+=> ["Alex", "John", "Ryan", "Vinny"]
+
+The tutorial then delves into arrays or strings, in this case it was dealing with a poem.
+
+poem[‘toast’] = ‘honeydew’ // this replaces the keywork toast with the word honeydew in the poem
+poem.downcase // replaces uppercase letters with lowercase ones
+
+> poem.lines.to_a.reverse // splits the poem up by lines then converts them to an Array. After that the lines are reversed.
+["More still did I want to eat it.\
+", "Planting our flag on Halley's comet,\
+", "But when I saw it on television,\
+", "And my toast has gone to the moon.\
+", "My honeydew has flown from my hand\
+"]
+
+poem.include? “my hand” //used to check if the string "my hand" is found inside the variable poem. 
+=> true
+
+Hash - an empty dictionary. It’s job is to pair two things up, a key and a value.
+books = {} - empty hash
+books[“Gravity’s Rainbow”] = :splendid //gives the book Gravity's Rainbow a rating of splendid. :splendid is a symbol, which are tiny, efficient code words with a colon
+=> :splendid
+
+>books
+=> {“Gravity’s Rainbow”=>:splendid}
+books.length //lists the number of keys
+books.keys //lists the keys, in this example it would list book titles
+=> [“Gravity’s Rainbow”]
+
+Blocks - chunks of code which can be tacked on to many Ruby's methods.
+books.values.each { |rate| ratings[rate] += 1 } - shows a rating and how many times you’ve given that rating.
+5.times {print “odelay!”}
+
+Directories
+Dir.entries “/” - listed out everything in the top directory
+Dir[“/*.txt”] - list out files that end with .txt
+FileUtil.cp(‘/comics.txt’, ‘/Home/comics.txt’) //copies comics.txt to the home directory
+File.open(­"/Home/comics.txt", "a") do |f| //opens the file
+..	f << "Cat and Girl:­ http:­ //catandgi­rl.com/" //appends this line to the end of the file
+..	end
+print File.read("/Home/comics.txt")//prints out the text file
+=> "Achewood: http://achewood.com/
+Dinosaur Comics: http://qwantz.com/
+Perry Bible Fellowship: http://cheston.com/pbf/archive.html
+Get Your War On: http://mnftiu.cc/
+Cat and Girl: http://catandgirl.com/"
+
+Creating methods
+def load_comics ( path ) //param is the path to the file
+..	comics = {} //empty hash
+..	File.foreach(path) do |line| //foreach loop that grabs the name and url and puts them inside the hash (assigning the url to the key)
+....	name, url = line.­split(': ')
+....	comics[name] = url.strip
+....	end
+..	comics
+..	end
+comics = load_comics('/comics.txt')//executes method and displays the result
+=> {"Achewood"=>"http://achewood.com/", "Dinosaur Comics"=>"http://qwantz.com/", "Perry Bible Fellowship"=>"http://cheston.com/pbf/archive.html", "Get Your War On"=>"http://mnftiu.cc/", "Cat and Girl"=>"http://catandgirl.com/"}
+strip - removes extra spaces around the url.
+split - method for strings, which breaks the string up into an array.
+
+Popup tutorials. The tutorial page has a tab called popup which is used for the remaining lessons
+
+Popup.goto "http://ruby-lang.org" //displays the 
+
+Popup.make {  //creates a page with a link to ruby-lang.org
+..	h1 "My Links"
+..	link "Go to Ruby", "http://ruby-lang.org/"
+..	}
+Popup.make do //creates a page with each of the comic titles and urls that were loaded into the comic hash.
+  h1 "Comics on the Web"
+  list do
+    comics.each do |name, url|
+      link name, url
+    end
+  end
+end
+
+Creating a class
+> class BlogEntry
+..	attr_accessor :title, :time, :fulltext, :mood //assigns attributes to the BlogEntry class
+..	end
+Accessors are variables attached to an object which can be used outside the object.
+Instance variables are the same variables you’re using for accessors when inside the object. Like in a method definition. (@time = Time.now)
+> entry = BlogEntry.new //instantiates a new BlogEntry object
+=> #<BlogEntry:0x88b5161>
+Success!
+> entry.title = "Today Mt. Hood Was Stolen!" //adding a title to the entry
+=> "Today Mt. Hood Was Stolen!"
+> entry.time = Time.now //adding the time to the entry
+2014-09-10 13:02:59 +0000
+Success!
+> entry.mood­ = :sick //assigning a mood to the entry
+:sick
+> entry.full­text = "I can't beleive Mt. Hood was stolen! I am speechless! It was stolen by a giraffe who drove away in his Cadil­lac Sevil­le very nonch­alant!!"
+"I can't believe Mt. Hood was stolen! I am speechless! It was stolen by a giraffe who drove away in his Cadillac Seville very nonchalant!!"
+> entry
+#<BlogEntry:0x33eb8505 @time=2014-09-10 13:02:59 +0000, @title="Today Mt. Hood Was Stolen!", @fulltext="I can't believe Mt. Hood was stolen! I am speechless! It was stolen by a giraffe who drove away in his Cadillac Seville very nonchalant!!", @mood=:sick>
+
+Adding a method to the class that will take in the title, mood, and fulltext as arguments
+> class BlogEntry
+..	def initialize ( title, mood, fulltext )
+....	@time = Time.now
+....	@title, @mood­, @full­text = title, mood, fulltext
+....	end
+..	end
+> entry2 = BlogEntry.new("I left my hoodie on the Mountain!", :confused, "I am never going back to that mountain and I hope a giraffe steals it.")
+#<BlogEntry:0x2557a61b @title="I left my hoodie on the Mountain!", @time=2014-09-10 13:06:57 +0000, @fulltext="I am never going back to that mountain and I hope a giraffe steals it.", @mood=:confused>
+blog.sort_by { |entry| entry.time }.reverse //sorts entries by time, then reverse is applied
+blog.find_all { |entry| entry.fulltext.match(/cadillac/i) } //finds entries with the keyword cadillac
+
+> Popup.make do //this code takes each of the blog entries and displays them on the popup window (including the fulltext) 
+..	h1 "My Blog!"
+..	blog.each do |entry|
+....	h2 entry.title
+....	p entry.fulltext
+....	end
+..	end
+
+This is what was displayed on the popup tab
+~~~~~~~~~~~~~
+My Blog!
+Today Mt. Hood Was Stolen!
+I can't believe Mt. Hood was stolen! I am speechless! It was stolen by a giraffe who drove away in his Cadillac Seville very nonchalant!!
+I Left my Hoodie on the Mountain!
+I am never going back to that mountain and I hope a giraffe steals it.
