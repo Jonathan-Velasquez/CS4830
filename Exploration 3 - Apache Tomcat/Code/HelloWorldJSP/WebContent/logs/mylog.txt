@@ -1,0 +1,4 @@
+2014-10-09 22:09:51:117 - Logging enabled
+2014-10-09 22:10:58:317 - Attempt to enable logging
+2014-10-09 22:11:14:036 - This is my entry in the log
+2014-10-09 22:11:26:208 - Logging disabled
